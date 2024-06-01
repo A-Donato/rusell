@@ -1,4 +1,4 @@
-package helloworld
+package hardware_scrapper
 
 import (
 	"context"
@@ -6,7 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	firebase "firebase.google.com/go"
+	"hardware_scrapper/clients"
+
+	"cloud.google.com/go/firestore"
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/gocolly/colly"
 )
@@ -16,36 +18,33 @@ type PokemonProduct struct {
 	Url, Image, Name, Price string
 }
 
+var (
+	FirestoreClient *firestore.Client
+	ctx             context.Context
+)
+
 func init() {
-	functions.HTTP("HelloHTTP", helloHTTP)
+	// Inicializamos variables globales
+	FirestoreClient, _ = clients.GetFirestoreClient()
+	ctx = context.Background()
+
+	// Definimos todas las funciones de entrada
+	functions.HTTP("start-scrapping", scrappHardware)
 }
 
 // helloHTTP is an HTTP Cloud Function with a request parameter.
-func helloHTTP(w http.ResponseWriter, r *http.Request) {
+func scrappHardware(w http.ResponseWriter, r *http.Request) {
+	// Cerramos el cliente de firebase
+	defer FirestoreClient.Close()
+
 	// Conectamos la db
 	// Use a service account
-
-	ctx := context.Background()
-	// serviceAccount := option.WithCredentialsFile("C:/Users/alexi/Downloads/russell-5412-9b0867d4d571.json")
-
-	// app, errNewApp := firebase.NewApp(ctx, nil, serviceAccount)
-	app, errNewApp := firebase.NewApp(ctx, nil)
-
-	if errNewApp != nil {
-		log.Fatalln(errNewApp)
-	}
-
-	client, errConnet := app.Firestore(ctx)
-	if errConnet != nil {
-		log.Fatalln(errConnet)
-	}
-	defer client.Close()
 
 	// Scrapper
 	// initializing the slice of structs that will contain the scraped data
 	var pokemonProducts []PokemonProduct
 
-	// scraping logic...
+	// // scraping logic...
 	c := colly.NewCollector()
 
 	c.OnRequest(func(r *colly.Request) {
@@ -91,7 +90,7 @@ func helloHTTP(w http.ResponseWriter, r *http.Request) {
 			"price": pokemonProduct.Price,
 		}
 
-		_, err := client.Collection("pokemons").Doc(pokemonProduct.Name).Set(ctx, pokemon)
+		_, err := FirestoreClient.Collection("pokemons").Doc(pokemonProduct.Name).Set(ctx, pokemon)
 
 		if err != nil {
 			log.Fatalf("Failed adding pokemon %v | Error: %v", pokemonProduct.Name, err)
@@ -99,7 +98,7 @@ func helloHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Guardamos a: %v", pokemonProduct.Name)
 		}
 	}
-	log.Println("Terminamos")
+	// log.Println("Terminamos")
 
 	fmt.Fprintf(w, "Terminamos con la subida de mierda")
 }
