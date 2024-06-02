@@ -6,11 +6,10 @@ import (
 	"log"
 	"net/http"
 
-	"hardware_scrapper/clients"
-
 	"cloud.google.com/go/firestore"
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/gocolly/colly"
+	"russell.com/hardware_scrapper/clients"
 )
 
 // defining a data structure to store the scraped data

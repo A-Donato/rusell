@@ -1,4 +1,4 @@
-module hardware_scrapper
+module russell.com/hardware_scrapper
 
 go 1.22.2
 
