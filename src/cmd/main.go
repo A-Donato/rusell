@@ -5,7 +5,7 @@ import (
 	"os"
 
 	// Blank-import the function package so the init() runs
-	_ "hardware_scrapper"
+	_ "russell.com/hardware_scrapper"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/funcframework"
 )
