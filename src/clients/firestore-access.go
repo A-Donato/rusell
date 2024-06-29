@@ -20,12 +20,15 @@ func GetFirestoreClient() (*firestore.Client, error) {
 		// We initialize Firestore client //
 		ctx := context.Background()
 
-		// For local development //
+		// ::: For local development ::: //
 		// serviceAccount := option.WithCredentialsFile("C:/Users/alexi/Downloads/russell-5412-9b0867d4d571.json")
 		// app, errNewApp := firebase.NewApp(ctx, nil, serviceAccount)
+		// ::: End local development ::: //
 
-		// For deployed apps //
+		// ::: For deployed apps ::: //
 		app, errNewApp := firebase.NewApp(ctx, nil)
+		// ::: End local apps ::: //
+
 		if errNewApp != nil {
 			firestoreError = errNewApp
 			log.Fatalln(firestoreError)
