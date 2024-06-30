@@ -11,14 +11,19 @@ import (
 	"russell.com/hardware_scrapper/structures"
 )
 
-func ScrapItem(target structures.Items_in_target) map[string]int {
+type ScrapedItem struct {
+	ItemId       string
+	ScrapResults map[string][]int
+}
+
+func ScrapItem(target structures.Items_in_target) ScrapedItem {
 	collyClient := clients.GetCollyClient()
 	targets := target.Targets
 	storeNames := maps.Keys(targets)
 
-	resultsMap := make(map[string]int)
+	resultMap := make(map[string][]int)
 	for _, store := range storeNames {
-		resultsMap[store] = 0
+		resultMap[store] = []int{0}
 	}
 
 	for i := 0; i < len(targets); i++ {
@@ -33,7 +38,7 @@ func ScrapItem(target structures.Items_in_target) map[string]int {
 			if err != nil {
 				fmt.Println("🦜 Error converting string to int:", err)
 			} else {
-				resultsMap[storeNames[i]] = intValue
+				resultMap[storeNames[i]] = []int{intValue}
 			}
 
 			// Matamos todo lo relacionado a la pagina que visitamos
@@ -45,6 +50,6 @@ func ScrapItem(target structures.Items_in_target) map[string]int {
 		collyClient.Visit(targetInfo.Url)
 	}
 
-	return resultsMap
+	return ScrapedItem{ItemId: target.Item_id, ScrapResults: resultMap}
 
 }

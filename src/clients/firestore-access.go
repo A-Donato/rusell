@@ -27,7 +27,7 @@ func GetFirestoreClient() (*firestore.Client, error) {
 
 		// ::: For deployed apps ::: //
 		app, errNewApp := firebase.NewApp(ctx, nil)
-		// ::: End local apps ::: //
+		// ::: End deployed apps ::: //
 
 		if errNewApp != nil {
 			firestoreError = errNewApp
