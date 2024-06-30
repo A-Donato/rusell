@@ -44,8 +44,10 @@ func scrappHardware(w http.ResponseWriter, r *http.Request) {
 
 	// Scrappeamos
 	result := services.ScrapItem(itemsInTarget[0])
-
 	log.Println("resultado de la ejecución: ", result)
+
+	// Actualizamos el historico de precios
+	services.UpdateItemBulk(ctx, []services.ScrapedItem{result})
 
 	fmt.Fprintf(w, "no fuimos")
 

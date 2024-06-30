@@ -23,11 +23,11 @@ type Scrap_targets struct {
 }
 
 type Price_analysis struct {
-	Id                        string
-	Item_id                   string
-	Analysis_interval_in_days int
-	Last_analysis             string
-	Measurements              map[string][]int
+	Id                        string           `id:"ID,omitempty"`
+	Item_id                   string           `firestore:"item_id,omitempty"`
+	Analysis_interval_in_days int              `firestore:"analysis_interval_in_days,omitempty"`
+	Last_analysis             string           `firestore:"last_analysis,omitempty"`
+	Measurements              map[string][]int `firestore:"measurements,omitempty"`
 }
 
 type Target struct {
